@@ -11,6 +11,7 @@ Basiert auf: Epp, S. (2013). "Learning M-DNF in Boolean Circuits"
 """
 
 from typing import List, Tuple, Set, Dict, Optional
+from pathlib import Path
 import random
 import math
 from dataclasses import dataclass
@@ -347,22 +348,15 @@ class MasterarbeitBenchmark:
     Standard-Benchmarks aus der Masterarbeit:
     
     Exp 1: Vary inputs (fixed depth=0)
-        - m sweeps from 4 to 20, step 2
-        - Circuit Type: TargetAND
-        
     Exp 2: Vary depth (fixed m=10)
-        - depth sweeps from 1 to 12
-        - Circuit Type: TargetAND_Random
-        
-    Exp 3: ISCAS'85 Benchmarks
-        - Vordefinierte industrielle Circuits
+    Exp 3: ISCAS'85 Benchmarks -> Dynamisch aus dem Ordner geladen
     """
     
     @staticmethod
     def exp1_vary_inputs() -> List[BooleanCircuit]:
         """Experiment 1: Varying Inputs (m=4 to 20)"""
         circuits = []
-        for m in range(4, 21, 2):  # 4, 6, 8, 10, 12, 14, 16, 18, 20
+        for m in range(4, 21, 2):
             circuit = TargetANDCircuitGenerator.build_target_and_circuit(m)
             circuits.append(circuit)
         return circuits
@@ -371,27 +365,90 @@ class MasterarbeitBenchmark:
     def exp2_vary_depth(m: int = 10) -> List[BooleanCircuit]:
         """Experiment 2: Varying Depth (depth=1 to 12, m=10)"""
         circuits = []
-        for depth in range(1, 13):  # 1 to 12
+        for depth in range(1, 13):
             circuit = TargetANDCircuitGenerator.build_target_and_with_random_layers(m, depth, seed=42)
             circuits.append(circuit)
         return circuits
     
     @staticmethod
-    def exp3_iscas85() -> List[BooleanCircuit]:
-        """Experiment 3: ISCAS'85 Benchmarks (simplified placeholders)"""
-        circuits = []
-        # Vereinfachte Platzhalter - in echtem Fall würde man Benchmarks laden
-        # c17: 5 inputs, 6 gates
-        c17 = BooleanCircuit(
-            gates=[("AND", [0, 1]), ("OR", [2, 3]), ("AND", [1, 4]),
-                   ("OR", [4, 0]), ("XOR", [2, 3])],
-            num_inputs=5, num_outputs=1,
+    def load_bench_file(file_path: Path) -> BooleanCircuit:
+        """Parst eine Standard-.bench-Datei in ein BooleanCircuit-Objekt"""
+        gates = []
+        inputs = []
+        outputs = []
+        wire_map: Dict[str, int] = {}
+        
+        def get_wire_id(name: str) -> int:
+            name = name.strip()
+            if name not in wire_map:
+                wire_map[name] = len(wire_map)
+            return wire_map[name]
+
+        with open(file_path, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                
+                if line.upper().startswith("INPUT"):
+                    name = line.split("(")[1].split(")")[0]
+                    inputs.append(get_wire_id(name))
+                    
+                elif line.upper().startswith("OUTPUT"):
+                    name = line.split("(")[1].split(")")[0]
+                    outputs.append(get_wire_id(name))
+                    
+                elif "=" in line:
+                    out_part, gate_part = line.split("=")
+                    out_wire = get_wire_id(out_part)
+                    
+                    gate_type = gate_part.split("(")[0].strip().upper()
+                    in_parts = gate_part.split("(")[1].split(")")[0].split(",")
+                    in_wires = [get_wire_id(p) for p in in_parts if p.strip()]
+                    
+                    gates.append((gate_type, in_wires, out_wire))
+
+        num_inputs = len(inputs)
+        sorted_gates = [None] * len(gates)
+        
+        for g_type, g_ins, g_out in gates:
+            gate_pos = g_out - num_inputs
+            if 0 <= gate_pos < len(sorted_gates):
+                adj_ins = [i for i in g_ins]
+                sorted_gates[gate_pos] = (g_type, adj_ins)
+        
+        final_gates = [g for g in sorted_gates if g is not None]
+
+        return BooleanCircuit(
+            gates=final_gates,
+            num_inputs=num_inputs,
+            num_outputs=len(outputs),
             circuit_type=CircuitType.ISCAS85,
-            size=5,
-            name="c17",
-            metadata={"benchmark": "ISCAS'85", "name": "c17", "inputs": 5}
+            size=len(final_gates),
+            name=file_path.stem,
+            metadata={"benchmark": "ISCAS'85", "original_file": file_path.name}
         )
-        circuits.append(c17)
+
+    @staticmethod
+    def exp3_iscas85() -> List[BooleanCircuit]:
+        """Lädt automatisch alle .bench-Dateien aus dem ./iscas85/ Ordner"""
+        circuits = []
+        iscas_dir = Path(__file__).parent / "iscas85"
+        
+        if not iscas_dir.exists():
+            iscas_dir = Path("iscas85")
+            
+        if not iscas_dir.exists():
+            print(f"[Warning] Ordner {iscas_dir} nicht gefunden!")
+            return circuits
+            
+        for bench_file in sorted(iscas_dir.glob("*.bench")):
+            try:
+                circuit = MasterarbeitBenchmark.load_bench_file(bench_file)
+                circuits.append(circuit)
+            except Exception as e:
+                print(f"[Error] Konnte {bench_file.name} nicht parsen: {e}")
+                
         return circuits
 
 
