@@ -1,0 +1,40 @@
+======================================================================
+SUBGRAPH-SAT-SOLVER EXPERIMENT REPORT
+======================================================================
+
+Total Experiments: 106
+
+
+ISCAS85
+----------------------------------------
+  Experiments: 1
+  Avg Runtime: 1109.60 ms
+  Min Runtime: 1109.60 ms
+  Max Runtime: 1109.60 ms
+  Median Runtime: 1109.60 ms
+  Avg Gates: 5.0
+  Avg Clauses: 20.0
+
+TARGET_AND
+----------------------------------------
+  Experiments: 45
+  Avg Runtime: 1115.85 ms
+  Min Runtime: 1096.34 ms
+  Max Runtime: 1144.42 ms
+  Median Runtime: 1114.01 ms
+  Std Dev: 11.99 ms
+  Avg Gates: 23.0
+  Avg Clauses: 68.0
+
+TARGET_AND_RANDOM
+----------------------------------------
+  Experiments: 60
+  Avg Runtime: 1115.31 ms
+  Min Runtime: 1077.60 ms
+  Max Runtime: 1150.02 ms
+  Median Runtime: 1113.09 ms
+  Std Dev: 14.26 ms
+  Avg Gates: 40.9
+  Avg Clauses: 151.2
+
+======================================================================

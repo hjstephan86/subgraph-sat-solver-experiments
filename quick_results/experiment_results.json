@@ -1,0 +1,401 @@
+[
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m4",
+    "num_inputs": 4,
+    "num_gates": 7,
+    "num_clauses": 20,
+    "satisfiable": false,
+    "runtime_ms": 1222.7756977081299,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:38",
+    "lbv_rounds": 3,
+    "metadata": {
+      "m": 4,
+      "lbv_rounds": 3,
+      "satisfying_assignment": "{0: False, 1: True, 2: False, 3: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m6",
+    "num_inputs": 6,
+    "num_gates": 11,
+    "num_clauses": 32,
+    "satisfiable": false,
+    "runtime_ms": 1123.3808994293213,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:39",
+    "lbv_rounds": 3,
+    "metadata": {
+      "m": 6,
+      "lbv_rounds": 3,
+      "satisfying_assignment": "{0: False, 1: True, 2: True, 3: False, 4: False, 5: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m8",
+    "num_inputs": 8,
+    "num_gates": 15,
+    "num_clauses": 44,
+    "satisfiable": false,
+    "runtime_ms": 1146.7859745025635,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:40",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 8,
+      "lbv_rounds": 4,
+      "satisfying_assignment": "{0: True, 1: False, 2: True, 3: True, 4: False, 5: False, 6: False, 7: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m10",
+    "num_inputs": 10,
+    "num_gates": 19,
+    "num_clauses": 56,
+    "satisfiable": false,
+    "runtime_ms": 1112.5531196594238,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:41",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "lbv_rounds": 4,
+      "satisfying_assignment": "{0: True, 1: False, 2: True, 3: True, 4: True, 5: False, 6: False, 7: False, 8: False, 9: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m12",
+    "num_inputs": 12,
+    "num_gates": 23,
+    "num_clauses": 68,
+    "satisfiable": false,
+    "runtime_ms": 1129.8606395721436,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:42",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 12,
+      "lbv_rounds": 4,
+      "satisfying_assignment": "{0: True, 1: False, 2: False, 3: True, 4: True, 5: True, 6: False, 7: False, 8: False, 9: False, 10: False, 11: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m14",
+    "num_inputs": 14,
+    "num_gates": 27,
+    "num_clauses": 80,
+    "satisfiable": false,
+    "runtime_ms": 1110.0380420684814,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:43",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 14,
+      "lbv_rounds": 4,
+      "satisfying_assignment": "{0: True, 1: False, 2: False, 3: True, 4: True, 5: True, 6: True, 7: False, 8: False, 9: False, 10: False, 11: False, 12: False, 13: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m16",
+    "num_inputs": 16,
+    "num_gates": 31,
+    "num_clauses": 92,
+    "satisfiable": false,
+    "runtime_ms": 1112.281322479248,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:45",
+    "lbv_rounds": 5,
+    "metadata": {
+      "m": 16,
+      "lbv_rounds": 5,
+      "satisfying_assignment": "{0: False, 1: True, 2: False, 3: False, 4: True, 5: True, 6: True, 7: True, 8: False, 9: False, 10: False, 11: False, 12: False, 13: False, 14: False, 15: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m18",
+    "num_inputs": 18,
+    "num_gates": 35,
+    "num_clauses": 104,
+    "satisfiable": false,
+    "runtime_ms": 1114.5451068878174,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:46",
+    "lbv_rounds": 5,
+    "metadata": {
+      "m": 18,
+      "lbv_rounds": 5,
+      "satisfying_assignment": "{0: False, 1: True, 2: False, 3: False, 4: True, 5: True, 6: True, 7: True, 8: True, 9: False, 10: False, 11: False, 12: False, 13: False, 14: False, 15: False, 16: False, 17: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and",
+    "circuit_name": "TargetAND_m20",
+    "num_inputs": 20,
+    "num_gates": 39,
+    "num_clauses": 116,
+    "satisfiable": false,
+    "runtime_ms": 1130.1121711730957,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:47",
+    "lbv_rounds": 5,
+    "metadata": {
+      "m": 20,
+      "lbv_rounds": 5,
+      "satisfying_assignment": "{0: False, 1: True, 2: False, 3: False, 4: False, 5: True, 6: True, 7: True, 8: True, 9: True, 10: False, 11: False, 12: False, 13: False, 14: False, 15: False, 16: False, 17: False, 18: False, 19: False}"
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d1",
+    "num_inputs": 10,
+    "num_gates": 27,
+    "num_clauses": 91,
+    "satisfiable": false,
+    "runtime_ms": 1124.0217685699463,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:48",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 1,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d2",
+    "num_inputs": 10,
+    "num_gates": 30,
+    "num_clauses": 104,
+    "satisfiable": false,
+    "runtime_ms": 1111.5751266479492,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:49",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 2,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d3",
+    "num_inputs": 10,
+    "num_gates": 33,
+    "num_clauses": 117,
+    "satisfiable": false,
+    "runtime_ms": 1114.9368286132812,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:50",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 3,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d4",
+    "num_inputs": 10,
+    "num_gates": 35,
+    "num_clauses": 127,
+    "satisfiable": false,
+    "runtime_ms": 1112.6694679260254,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:51",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 4,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d5",
+    "num_inputs": 10,
+    "num_gates": 38,
+    "num_clauses": 139,
+    "satisfiable": false,
+    "runtime_ms": 1121.1740970611572,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:52",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 5,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d6",
+    "num_inputs": 10,
+    "num_gates": 40,
+    "num_clauses": 149,
+    "satisfiable": false,
+    "runtime_ms": 1121.4368343353271,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:54",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 6,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d7",
+    "num_inputs": 10,
+    "num_gates": 42,
+    "num_clauses": 157,
+    "satisfiable": false,
+    "runtime_ms": 1145.1058387756348,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:55",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 7,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d8",
+    "num_inputs": 10,
+    "num_gates": 44,
+    "num_clauses": 165,
+    "satisfiable": false,
+    "runtime_ms": 1114.6504878997803,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:56",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 8,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d9",
+    "num_inputs": 10,
+    "num_gates": 47,
+    "num_clauses": 177,
+    "satisfiable": false,
+    "runtime_ms": 1107.1114540100098,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:57",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 9,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d10",
+    "num_inputs": 10,
+    "num_gates": 49,
+    "num_clauses": 185,
+    "satisfiable": false,
+    "runtime_ms": 1110.3734970092773,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:58",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 10,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d11",
+    "num_inputs": 10,
+    "num_gates": 52,
+    "num_clauses": 197,
+    "satisfiable": false,
+    "runtime_ms": 1112.799882888794,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:25:59",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 11,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  },
+  {
+    "circuit_type": "target_and_random",
+    "circuit_name": "TargetAND_m10_d12",
+    "num_inputs": 10,
+    "num_gates": 54,
+    "num_clauses": 206,
+    "satisfiable": false,
+    "runtime_ms": 1113.3785247802734,
+    "memory_usage_mb": 0.0,
+    "timestamp": "2026-07-08 08:26:00",
+    "lbv_rounds": 4,
+    "metadata": {
+      "m": 10,
+      "depth": 12,
+      "lbv_rounds": 4
+    },
+    "solver_output": null,
+    "error": null
+  }
+]
