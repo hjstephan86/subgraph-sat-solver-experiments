@@ -21,7 +21,7 @@ class ExperimentVisualizer:
     # LaTeX-kompatible Schriftarten
     FONT_CONFIG = {
         'font.family': 'serif',
-        'font.serif': ['Computer Modern'],
+        'font.serif': ['DejaVu Serif', 'Times New Roman', 'Times', 'Liberation Serif', 'serif'],
         'text.usetex': False,  # Deaktiviert bei LaTeX-Kompatibilität
         'figure.figsize': (10, 6),
         'figure.dpi': 300,
@@ -52,6 +52,8 @@ class ExperimentVisualizer:
             results: Liste von ExperimentResult Objekten
             output_dir: Ausgabeverzeichnis für Plots
         """
+        plt.style.use('default')
+        
         plt.rcParams.update(self.FONT_CONFIG)
         self.results = results
         self.output_dir = Path(output_dir)
@@ -80,24 +82,30 @@ class ExperimentVisualizer:
         fig, ax = plt.subplots(figsize=figsize)
         
         grouped = self._group_results()
+        has_plots = False  # Tracken, ob tatsächlich etwas geplottet wurde
         
         for circuit_type, results in grouped.items():
-            # Sortiere nach Größe
             results_sorted = sorted(results, key=lambda r: r.num_gates)
             
             sizes = [r.num_gates for r in results_sorted]
             runtimes = [r.runtime_ms for r in results_sorted]
             
-            ax.plot(sizes, runtimes, 
-                   marker='o', 
-                   label=circuit_type.capitalize(),
-                   color=self.COLORS.get(circuit_type, '#000000'),
-                   alpha=0.7)
+            if sizes and runtimes:
+                ax.plot(sizes, runtimes, 
+                       marker='o', 
+                       label=circuit_type.capitalize(),
+                       color=self.COLORS.get(circuit_type, '#000000'),
+                       alpha=0.7)
+                has_plots = True
         
         ax.set_xlabel('Circuit Size (Number of Gates)', fontsize=12)
         ax.set_ylabel('Runtime (ms)', fontsize=12)
         ax.set_title('Subgraph-SAT-Solver: Runtime vs. Circuit Size', fontsize=14, fontweight='bold')
-        ax.legend(loc='best')
+        
+        # Nur Legende anzeigen, wenn auch Daten da sind
+        if has_plots:
+            ax.legend(loc='best')
+            
         ax.grid(True, alpha=0.3)
         ax.set_yscale('log')
         
@@ -118,14 +126,22 @@ class ExperimentVisualizer:
             runtimes = [r.runtime_ms for r in results if r.runtime_ms > 0]
             if runtimes:
                 data.append(runtimes)
-                labels.append(circuit_type.capitalize())
-                colors.append(self.COLORS.get(circuit_type, '#000000'))
+                labels.append(circuit_type.upper()) # Direkt in Großbuchstaben für den Report-Look
+                colors.append(self.COLORS.get(circuit_type.lower(), '#1f77b4'))
         
-        if not data or len(data) == 0:
-            print("Warning: No data available to plot runtime distribution.")
+        if not data:
+            ax.text(0.5, 0.5, 'No data available', 
+                    horizontalalignment='center', verticalalignment='center', 
+                    transform=ax.transAxes, fontsize=14, color='gray')
+            ax.set_title('Subgraph-SAT-Solver: Runtime Distribution', fontsize=14, fontweight='bold')
             return fig
             
-        bp = ax.boxplot(data, tick_labels=labels, patch_artist=True)
+        # Wir übergeben hier KEINE Labels direkt an boxplot, um den Versionskonflikt zu umgehen
+        bp = ax.boxplot(data, patch_artist=True)
+        
+        # Stattdessen setzen wir die Ticks und Labels danach sauber auf die X-Achse
+        ax.set_xticks(range(1, len(labels) + 1))
+        ax.set_xticklabels(labels)
         
         for patch, color in zip(bp['boxes'], colors):
             patch.set_facecolor(color)
@@ -144,21 +160,27 @@ class ExperimentVisualizer:
         fig, ax = plt.subplots(figsize=figsize)
         
         grouped = self._group_results()
+        has_plots = False
         
         for circuit_type, results in grouped.items():
             gates = [r.num_gates for r in results]
             runtimes = [r.runtime_ms for r in results]
             
-            ax.scatter(gates, runtimes,
-                      label=circuit_type.capitalize(),
-                      color=self.COLORS.get(circuit_type, '#000000'),
-                      alpha=0.6,
-                      s=100)
+            if gates and runtimes:
+                ax.scatter(gates, runtimes,
+                          label=circuit_type.capitalize(),
+                          color=self.COLORS.get(circuit_type, '#000000'),
+                          alpha=0.6,
+                          s=100)
+                has_plots = True
         
         ax.set_xlabel('Number of Gates', fontsize=12)
         ax.set_ylabel('Runtime (ms)', fontsize=12)
         ax.set_title('Subgraph-SAT-Solver: Gates vs. Runtime', fontsize=14, fontweight='bold')
-        ax.legend(loc='best')
+        
+        if has_plots:
+            ax.legend(loc='best')
+            
         ax.grid(True, alpha=0.3)
         ax.set_xscale('log')
         ax.set_yscale('log')
@@ -171,17 +193,26 @@ class ExperimentVisualizer:
         fig, ax = plt.subplots(figsize=figsize)
         
         grouped = self._group_results()
+        has_plots = False  # Tracken, ob Daten geplottet wurden
         
         for circuit_type in sorted(grouped.keys()):
             results = grouped[circuit_type]
             clauses = [r.num_clauses for r in results]
-            ax.hist(clauses, alpha=0.5, label=circuit_type.capitalize(),
-                   color=self.COLORS.get(circuit_type, '#000000'))
+            
+            # Nur plotten, wenn die Liste nicht leer ist
+            if clauses:
+                ax.hist(clauses, alpha=0.5, label=circuit_type.capitalize(),
+                       color=self.COLORS.get(circuit_type, '#000000'))
+                has_plots = True
         
         ax.set_xlabel('Number of Clauses', fontsize=12)
         ax.set_ylabel('Frequency', fontsize=12)
         ax.set_title('Subgraph-SAT-Solver: CNF Clause Distribution', fontsize=14, fontweight='bold')
-        ax.legend(loc='best')
+        
+        # Nur Legende anzeigen, wenn auch Balken gezeichnet wurden
+        if has_plots:
+            ax.legend(loc='best')
+            
         ax.grid(True, alpha=0.3, axis='y')
         
         plt.tight_layout()
@@ -235,7 +266,7 @@ class ExperimentVisualizer:
         for idx, (circuit_type, results) in enumerate(sorted(grouped.items())):
             if idx >= 4:
                 break
-            
+                
             # Sortiere nach Größe
             results_sorted = sorted(results, key=lambda r: r.num_gates)
             
@@ -243,8 +274,19 @@ class ExperimentVisualizer:
             runtimes = [r.runtime_ms for r in results_sorted]
             
             ax = axes[idx]
+            
+            # Falls für diesen Typ gar keine Daten da sind, überspringen
+            if not sizes or not runtimes:
+                ax.text(0.5, 0.5, 'No data', 
+                        horizontalalignment='center', verticalalignment='center', 
+                        transform=ax.transAxes, color='gray')
+                ax.set_title(f'{circuit_type.capitalize()} Scaling', fontsize=12, fontweight='bold')
+                continue
+                
             ax.plot(sizes, runtimes, marker='o', color=self.COLORS.get(circuit_type, '#7f8c8d'),
                    linewidth=2, markersize=8)
+            
+            has_legend_item = False
             
             # Fit curve if data is sufficient
             if len(sizes) > 2:
@@ -254,6 +296,7 @@ class ExperimentVisualizer:
                     x_smooth = np.logspace(np.log10(min(sizes)), np.log10(max(sizes)), 100)
                     ax.plot(x_smooth, np.exp(p(np.log(x_smooth))), '--', alpha=0.5, 
                            color=self.COLORS.get(circuit_type, '#7f8c8d'), label='Fit (exp)')
+                    has_legend_item = True
                 except Exception:
                     pass
             
@@ -261,7 +304,10 @@ class ExperimentVisualizer:
             ax.set_ylabel('Runtime (ms)', fontsize=11)
             ax.set_title(f'{circuit_type.capitalize()} Scaling', fontsize=12, fontweight='bold')
             ax.grid(True, alpha=0.3)
-            ax.legend()
+            
+            # Nur eine Legende einblenden, wenn der Fit geklappt hat und das Label existiert
+            if has_legend_item:
+                ax.legend()
         
         plt.tight_layout()
         return fig
