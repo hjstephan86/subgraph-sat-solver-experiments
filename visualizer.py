@@ -26,23 +26,44 @@ class ExperimentVisualizer:
         'figure.figsize': (10, 6),
         'figure.dpi': 300,
         'savefig.dpi': 300,
-        'lines.linewidth': 2,
-        'lines.markersize': 8,
+        'lines.linewidth': 2.5,
+        'lines.markersize': 10,
         'axes.labelsize': 12,
         'axes.titlesize': 14,
+        'axes.facecolor': '#ffffff',  # Weißer Hintergrund
+        'figure.facecolor': '#ffffff',  # Weißer Figure-Hintergrund
         'xtick.labelsize': 10,
         'ytick.labelsize': 10,
         'legend.fontsize': 10,
-        'grid.alpha': 0.3
+        'grid.alpha': 0.25,
+        'grid.color': '#cccccc',
+        'axes.edgecolor': '#333333',
+        'axes.linewidth': 1.2
     }
     
-    # Farben für verschiedene Circuit-Typen
+    # Erweiterte, vibrant Farben für verschiedene Circuit-Typen
     COLORS = {
-        'sequential': '#1f77b4',  # Blau
-        'parallel': '#ff7f0e',    # Orange
-        'grid': '#2ca02c',        # Grün
-        'random': '#d62728'       # Rot
+        'sequential': '#2E86AB',      # Tiefes Blau
+        'parallel': '#A23B72',        # Magenta/Violett
+        'grid': '#F18F01',            # Leuchtendes Orange
+        'random': '#C73E1D',          # Tiefes Rot
+        'iscas': '#06A77D',           # Türkis/Grün
+        'benchmark': '#D62828'        # Helles Rot
     }
+    
+    # Erweiterte Farbpalette für Fallback und Histogramme
+    EXTENDED_COLORS = [
+        '#2E86AB',  # Tiefes Blau
+        '#A23B72',  # Magenta
+        '#F18F01',  # Orange
+        '#C73E1D',  # Rot
+        '#06A77D',  # Türkis
+        '#D62828',  # Helles Rot
+        '#003049',  # Dunkelblau
+        '#FB5607',  # Orange-Rot
+        '#8338EC',  # Violett
+        '#FFBE0B'   # Gold
+    ]
     
     def __init__(self, results: List[ExperimentResult], output_dir: str = "."):
         """
@@ -58,6 +79,30 @@ class ExperimentVisualizer:
         self.results = results
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self._color_index = 0  # Für Fallback-Farbvergabe
+    
+    def _get_color(self, circuit_type: str, fallback_index: int = 0) -> str:
+        """
+        Gibt Farbe für Circuit-Typ zurück, mit vibranter Fallback-Palette
+        
+        Args:
+            circuit_type: Circuit-Typ (key in COLORS dict)
+            fallback_index: Index für Fallback-Farben wenn type nicht gefunden
+        
+        Returns:
+            Hex-Farbcode
+        """
+        # Versuche zuerst den exakten Typ
+        if circuit_type in self.COLORS:
+            return self.COLORS[circuit_type]
+        
+        # Versuche lowercase
+        circuit_type_lower = circuit_type.lower()
+        if circuit_type_lower in self.COLORS:
+            return self.COLORS[circuit_type_lower]
+        
+        # Fallback zu erweiterte Palette (niemals schwarz!)
+        return self.EXTENDED_COLORS[fallback_index % len(self.EXTENDED_COLORS)]
     
     @staticmethod
     def load_results(json_path: str) -> List[ExperimentResult]:
@@ -84,7 +129,7 @@ class ExperimentVisualizer:
         grouped = self._group_results()
         has_plots = False  # Tracken, ob tatsächlich etwas geplottet wurde
         
-        for circuit_type, results in grouped.items():
+        for idx, (circuit_type, results) in enumerate(sorted(grouped.items())):
             results_sorted = sorted(results, key=lambda r: r.num_gates)
             
             sizes = [r.num_gates for r in results_sorted]
@@ -94,8 +139,9 @@ class ExperimentVisualizer:
                 ax.plot(sizes, runtimes, 
                        marker='o', 
                        label=circuit_type.capitalize(),
-                       color=self.COLORS.get(circuit_type, '#000000'),
-                       alpha=0.7)
+                       color=self._get_color(circuit_type, idx),
+                       alpha=0.8,
+                       linewidth=2.5)
                 has_plots = True
         
         ax.set_xlabel('Circuit Size (Number of Gates)', fontsize=12)
@@ -104,9 +150,9 @@ class ExperimentVisualizer:
         
         # Nur Legende anzeigen, wenn auch Daten da sind
         if has_plots:
-            ax.legend(loc='best')
+            ax.legend(loc='best', framealpha=0.95)
             
-        ax.grid(True, alpha=0.3)
+        ax.grid(True, alpha=0.25, linestyle='--')
         ax.set_yscale('log')
         
         plt.tight_layout()
@@ -121,13 +167,13 @@ class ExperimentVisualizer:
         labels = []
         colors = []
         
-        for circuit_type in sorted(grouped.keys()):
+        for idx, circuit_type in enumerate(sorted(grouped.keys())):
             results = grouped[circuit_type]
             runtimes = [r.runtime_ms for r in results if r.runtime_ms > 0]
             if runtimes:
                 data.append(runtimes)
                 labels.append(circuit_type.upper()) # Direkt in Großbuchstaben für den Report-Look
-                colors.append(self.COLORS.get(circuit_type.lower(), '#1f77b4'))
+                colors.append(self._get_color(circuit_type, idx))
         
         if not data:
             ax.text(0.5, 0.5, 'No data available', 
@@ -143,13 +189,23 @@ class ExperimentVisualizer:
         ax.set_xticks(range(1, len(labels) + 1))
         ax.set_xticklabels(labels)
         
+        # Färbe Boxen und Whisker mit vibranten Farben
         for patch, color in zip(bp['boxes'], colors):
             patch.set_facecolor(color)
-            patch.set_alpha(0.7)
+            patch.set_alpha(0.75)
+            patch.set_linewidth(1.5)
+        
+        # Färbe auch die Whisker und Medianlinien
+        for whisker in bp['whiskers']:
+            whisker.set(linewidth=1.5, color='#333333', alpha=0.6)
+        for cap in bp['caps']:
+            cap.set(linewidth=1.5, color='#333333', alpha=0.6)
+        for median in bp['medians']:
+            median.set(linewidth=2, color='#000000')
         
         ax.set_ylabel('Runtime (ms)', fontsize=12)
         ax.set_title('Subgraph-SAT-Solver: Runtime Distribution', fontsize=14, fontweight='bold')
-        ax.grid(True, alpha=0.3, axis='y')
+        ax.grid(True, alpha=0.25, axis='y', linestyle='--')
         ax.set_yscale('log')
         
         plt.tight_layout()
@@ -162,16 +218,18 @@ class ExperimentVisualizer:
         grouped = self._group_results()
         has_plots = False
         
-        for circuit_type, results in grouped.items():
+        for idx, (circuit_type, results) in enumerate(sorted(grouped.items())):
             gates = [r.num_gates for r in results]
             runtimes = [r.runtime_ms for r in results]
             
             if gates and runtimes:
                 ax.scatter(gates, runtimes,
                           label=circuit_type.capitalize(),
-                          color=self.COLORS.get(circuit_type, '#000000'),
-                          alpha=0.6,
-                          s=100)
+                          color=self._get_color(circuit_type, idx),
+                          alpha=0.75,
+                          s=120,
+                          edgecolors='#333333',
+                          linewidth=0.8)
                 has_plots = True
         
         ax.set_xlabel('Number of Gates', fontsize=12)
@@ -179,9 +237,9 @@ class ExperimentVisualizer:
         ax.set_title('Subgraph-SAT-Solver: Gates vs. Runtime', fontsize=14, fontweight='bold')
         
         if has_plots:
-            ax.legend(loc='best')
+            ax.legend(loc='best', framealpha=0.95)
             
-        ax.grid(True, alpha=0.3)
+        ax.grid(True, alpha=0.25, linestyle='--')
         ax.set_xscale('log')
         ax.set_yscale('log')
         
@@ -195,14 +253,15 @@ class ExperimentVisualizer:
         grouped = self._group_results()
         has_plots = False  # Tracken, ob Daten geplottet wurden
         
-        for circuit_type in sorted(grouped.keys()):
+        for idx, circuit_type in enumerate(sorted(grouped.keys())):
             results = grouped[circuit_type]
             clauses = [r.num_clauses for r in results]
             
             # Nur plotten, wenn die Liste nicht leer ist
             if clauses:
-                ax.hist(clauses, alpha=0.5, label=circuit_type.capitalize(),
-                       color=self.COLORS.get(circuit_type, '#000000'))
+                ax.hist(clauses, alpha=0.65, label=circuit_type.capitalize(),
+                       color=self._get_color(circuit_type, idx),
+                       edgecolor='#333333', linewidth=1.2)
                 has_plots = True
         
         ax.set_xlabel('Number of Clauses', fontsize=12)
@@ -211,9 +270,9 @@ class ExperimentVisualizer:
         
         # Nur Legende anzeigen, wenn auch Balken gezeichnet wurden
         if has_plots:
-            ax.legend(loc='best')
+            ax.legend(loc='best', framealpha=0.95)
             
-        ax.grid(True, alpha=0.3, axis='y')
+        ax.grid(True, alpha=0.25, axis='y', linestyle='--')
         
         plt.tight_layout()
         return fig
@@ -223,35 +282,36 @@ class ExperimentVisualizer:
         grouped = self._group_results()
         
         circuit_types = sorted(grouped.keys())
+        colors = [self._get_color(ct, idx) for idx, ct in enumerate(circuit_types)]
         
         fig, axes = plt.subplots(1, 3, figsize=figsize)
         
         # Durchschnittliche Runtime
         runtimes = [np.mean([r.runtime_ms for r in grouped[ct]]) for ct in circuit_types]
-        axes[0].bar(range(len(circuit_types)), runtimes, color=[self.COLORS.get(ct, '#7f8c8d') for ct in circuit_types])
+        bars1 = axes[0].bar(range(len(circuit_types)), runtimes, color=colors, edgecolor='#333333', linewidth=1.5, alpha=0.85)
         axes[0].set_ylabel('Avg Runtime (ms)', fontsize=11)
         axes[0].set_title('Average Runtime', fontsize=12, fontweight='bold')
         axes[0].set_xticks(range(len(circuit_types)))
         axes[0].set_xticklabels([ct.capitalize() for ct in circuit_types], rotation=15)
-        axes[0].grid(True, alpha=0.3, axis='y')
+        axes[0].grid(True, alpha=0.25, axis='y', linestyle='--')
         
         # Durchschnittliche Gates
         gates = [np.mean([r.num_gates for r in grouped[ct]]) for ct in circuit_types]
-        axes[1].bar(range(len(circuit_types)), gates, color=[self.COLORS.get(ct, '#7f8c8d') for ct in circuit_types])
+        bars2 = axes[1].bar(range(len(circuit_types)), gates, color=colors, edgecolor='#333333', linewidth=1.5, alpha=0.85)
         axes[1].set_ylabel('Avg Gates', fontsize=11)
         axes[1].set_title('Average Gates', fontsize=12, fontweight='bold')
         axes[1].set_xticks(range(len(circuit_types)))
         axes[1].set_xticklabels([ct.capitalize() for ct in circuit_types], rotation=15)
-        axes[1].grid(True, alpha=0.3, axis='y')
+        axes[1].grid(True, alpha=0.25, axis='y', linestyle='--')
         
         # Durchschnittliche Clauses
         clauses = [np.mean([r.num_clauses for r in grouped[ct]]) for ct in circuit_types]
-        axes[2].bar(range(len(circuit_types)), clauses, color=[self.COLORS.get(ct, '#7f8c8d') for ct in circuit_types])
+        bars3 = axes[2].bar(range(len(circuit_types)), clauses, color=colors, edgecolor='#333333', linewidth=1.5, alpha=0.85)
         axes[2].set_ylabel('Avg Clauses', fontsize=11)
         axes[2].set_title('Average Clauses', fontsize=12, fontweight='bold')
         axes[2].set_xticks(range(len(circuit_types)))
         axes[2].set_xticklabels([ct.capitalize() for ct in circuit_types], rotation=15)
-        axes[2].grid(True, alpha=0.3, axis='y')
+        axes[2].grid(True, alpha=0.25, axis='y', linestyle='--')
         
         plt.tight_layout()
         return fig
@@ -282,9 +342,12 @@ class ExperimentVisualizer:
                         transform=ax.transAxes, color='gray')
                 ax.set_title(f'{circuit_type.capitalize()} Scaling', fontsize=12, fontweight='bold')
                 continue
-                
-            ax.plot(sizes, runtimes, marker='o', color=self.COLORS.get(circuit_type, '#7f8c8d'),
-                   linewidth=2, markersize=8)
+            
+            color = self._get_color(circuit_type, idx)
+            
+            ax.plot(sizes, runtimes, marker='o', color=color,
+                   linewidth=2.5, markersize=10, markeredgecolor='#333333', 
+                   markeredgewidth=1, alpha=0.85)
             
             has_legend_item = False
             
@@ -294,8 +357,8 @@ class ExperimentVisualizer:
                     z = np.polyfit(np.log(sizes), np.log(runtimes), 1)
                     p = np.poly1d(z)
                     x_smooth = np.logspace(np.log10(min(sizes)), np.log10(max(sizes)), 100)
-                    ax.plot(x_smooth, np.exp(p(np.log(x_smooth))), '--', alpha=0.5, 
-                           color=self.COLORS.get(circuit_type, '#7f8c8d'), label='Fit (exp)')
+                    ax.plot(x_smooth, np.exp(p(np.log(x_smooth))), '--', alpha=0.65, 
+                           color=color, linewidth=2, label='Fit (exp)')
                     has_legend_item = True
                 except Exception:
                     pass
@@ -303,11 +366,11 @@ class ExperimentVisualizer:
             ax.set_xlabel('Circuit Size', fontsize=11)
             ax.set_ylabel('Runtime (ms)', fontsize=11)
             ax.set_title(f'{circuit_type.capitalize()} Scaling', fontsize=12, fontweight='bold')
-            ax.grid(True, alpha=0.3)
+            ax.grid(True, alpha=0.25, linestyle='--')
             
             # Nur eine Legende einblenden, wenn der Fit geklappt hat und das Label existiert
             if has_legend_item:
-                ax.legend()
+                ax.legend(framealpha=0.95)
         
         plt.tight_layout()
         return fig

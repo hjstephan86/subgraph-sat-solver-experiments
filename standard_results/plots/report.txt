@@ -8,33 +8,33 @@ Total Experiments: 33
 ISCAS85
 ----------------------------------------
   Experiments: 12
-  Avg Runtime: 1140.80 ms
-  Min Runtime: 1109.45 ms
-  Max Runtime: 1239.21 ms
-  Median Runtime: 1129.46 ms
-  Std Dev: 34.11 ms
+  Avg Runtime: 22.08 ms
+  Min Runtime: 13.93 ms
+  Max Runtime: 35.24 ms
+  Median Runtime: 17.70 ms
+  Std Dev: 8.12 ms
   Avg Gates: 1106.5
   Avg Clauses: 3644.7
 
 TARGET_AND
 ----------------------------------------
   Experiments: 9
-  Avg Runtime: 1129.17 ms
-  Min Runtime: 1112.04 ms
-  Max Runtime: 1161.77 ms
-  Median Runtime: 1127.34 ms
-  Std Dev: 15.99 ms
+  Avg Runtime: 23.91 ms
+  Min Runtime: 15.89 ms
+  Max Runtime: 30.96 ms
+  Median Runtime: 24.41 ms
+  Std Dev: 4.30 ms
   Avg Gates: 23.0
   Avg Clauses: 68.0
 
 TARGET_AND_RANDOM
 ----------------------------------------
   Experiments: 12
-  Avg Runtime: 1120.45 ms
-  Min Runtime: 1103.21 ms
-  Max Runtime: 1146.62 ms
-  Median Runtime: 1120.98 ms
-  Std Dev: 11.79 ms
+  Avg Runtime: 21.76 ms
+  Min Runtime: 10.97 ms
+  Max Runtime: 33.70 ms
+  Median Runtime: 19.92 ms
+  Std Dev: 7.95 ms
   Avg Gates: 40.9
   Avg Clauses: 151.2
 
